@@ -37,6 +37,18 @@ def displaySpecshow(y_arr, sr_arr, names):
         plt.title(name)
     plt.show()
 
+#Returns an array of tuples, first element is tempo, second is beat, third is name.
+def getBeatsAndTempos(y_arr, sr_arr, names):
+    beatsAndTempos = []
+    for y, sr, name in zip(y_arr, sr_arr, names):
+        tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
+        beatsAndTempos.append((temp, beats, name))
+    return beatsAndTempos
+
+
+
+
+
 
 y_arr = []
 sr_arr = []
@@ -44,6 +56,11 @@ sr_arr = []
 for beat in beats:
     y_arr.append(beat[0])
     sr_arr.append(beat[1])
+
+beatsAndTempos = getBeatsAndTempos(y_arr, sr_arr, beat_names)
+
+for beatAndTempo in beatsAndTempos:
+    print(f"For beatAndTempo, {name}")
 
 
 displayWaveplot(y_arr, sr_arr, beat_names)
