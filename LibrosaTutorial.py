@@ -209,6 +209,9 @@ Bonus: run the beat tracker using only the percussive component
 '''
 
 
+Resource ----------------------------------------------------------------
+https://aqibsaeed.github.io/2016-09-03-urban-sound-classification-part-1/
+https://aqibsaeed.github.io/2016-09-24-urban-sound-classification-part-2/
 
 
 
