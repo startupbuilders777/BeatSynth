@@ -23,3 +23,5 @@ y_h, y_p = librosa.effects.hpss(y)
 
 plt.figure()
 librosa.display.waveplot(y=y, sr=sr)
+
+plt.show()
