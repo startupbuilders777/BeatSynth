@@ -11,8 +11,8 @@ beat_paths = ["Beats/beat1.mp3", "Beats/beat2.mp3"]
 
 beats = BeatSynthUtility.load_sound_files(beat_paths)
 
-print(beats[0][0].shape)
-print(beats[1][0].shape)
+#print(beats[0][0].shape)
+#print(beats[1][0].shape)
 
 
 #BeatSynthUtility.plot_specgram(beat_names, beats)
@@ -20,11 +20,23 @@ print(beats[1][0].shape)
 #BeatSynthUtility.plot_log_power_specgram(beat_names, beats)
 
 
-def displayWaveplot(y_arr, sr_arr):
-    for y, sr in zip(y_arr, sr_arr):
+def displayWaveplot(y_arr, sr_arr, names):
+    for y, sr, name in zip(y_arr, sr_arr, names):
         plt.figure()
         librosa.display.waveplot(y=y, sr=sr)
+        plt.title(name)
     plt.show()
+
+
+def displaySpecshow(y_arr, sr_arr, names):
+    for y, sr, name in zip(y_arr, sr_arr, names):
+        chroma = librosa.feature.chroma_cqt(y=y, sr=sr)
+        plt.figure(figsize=(6, 3))
+        plt.subplot(2, 1, 1)
+        librosa.display.specshow(chroma, y_axis='chroma')
+        plt.title(name)
+    plt.show()
+
 
 y_arr = []
 sr_arr = []
@@ -34,7 +46,8 @@ for beat in beats:
     sr_arr.append(beat[1])
 
 
-displayWaveplot(y_arr, sr_arr)
+displayWaveplot(y_arr, sr_arr, beat_names)
+displaySpecshow(y_arr, sr_arr, beat_names)
 
 
 #plt.figure()
