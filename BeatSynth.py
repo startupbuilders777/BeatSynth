@@ -53,15 +53,17 @@ def getBeatsAndTempos(y_arr, sr_arr, names):
 y_arr = []
 sr_arr = []
 
+
+
 for beat in beats:
     y_arr.append(beat[0])
     sr_arr.append(beat[1])
-
+'''
 beatsAndTempos = getBeatsAndTempos(y_arr, sr_arr, beat_names)
 
 for beatAndTempo in beatsAndTempos:
-    print(f"For beatAndTempo, {name}")
-
+    print("For beatAndTempo", name)
+'''
 
 displayWaveplot(y_arr, sr_arr, beat_names)
 displaySpecshow(y_arr, sr_arr, beat_names)
@@ -71,3 +73,4 @@ displaySpecshow(y_arr, sr_arr, beat_names)
 #librosa.display.waveplot(y=beats[0][0], sr=beats[0][1])
 
 #plt.show()
+
