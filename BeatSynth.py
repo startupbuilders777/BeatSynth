@@ -1,3 +1,6 @@
+
+
+
 import BeatSynthUtility
 import librosa
 import librosa.display
@@ -8,6 +11,17 @@ import matplotlib.pyplot as plt
 import matplotlib.style as ms
 beat_names = ["Playboi Cari 1", "Playboi Carti 2"]
 beat_paths = ["Beats/beat1.mp3", "Beats/beat2.mp3"]
+
+
+retrieveBeat = {
+    "Playboi Cari 1": "Beats/beat1.mp3",
+    "Playboi Carti 2": "Beats/beat2.mp3",
+}
+
+from pydub import AudioSegment
+
+def getAudioData(name):
+    sound = AudioSegment.from_mp3("")
 
 beats = BeatSynthUtility.load_sound_files(beat_paths)
 
@@ -27,7 +41,6 @@ def displayWaveplot(y_arr, sr_arr, names):
         plt.title(name)
     plt.show()
 
-
 def displaySpecshow(y_arr, sr_arr, names):
     for y, sr, name in zip(y_arr, sr_arr, names):
         chroma = librosa.feature.chroma_cqt(y=y, sr=sr)
@@ -44,10 +57,6 @@ def getBeatsAndTempos(y_arr, sr_arr, names):
         tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
         beatsAndTempos.append((temp, beats, name))
     return beatsAndTempos
-
-
-
-
 
 
 y_arr = []
