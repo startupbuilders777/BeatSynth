@@ -23,7 +23,7 @@ from pydub import AudioSegment
 from pydub.utils import get_array_type, get_encoder_name, get_frame_width, get_min_max_value, get_player_name, get_prober_name
 
 
-def exploreAudioData(name):
+def getAudioData(name):
     '''
     sound._data is a bytestring. I'm not sure what input Mpm expects, but you may need to convert the bytestring to an array like so:
     '''
@@ -93,9 +93,47 @@ def exploreAudioData(name):
 
 
 foook = getAudioData("Playboi Carti 1")
-print(len(foook))
-#print(foook[0])
 
+print(len(foook))
+
+#MAYBE WE SHUD SPLIT THE BEAT, EVERY SO OFTEN AT PLACES WHERE THE BEAT LOOPS
+
+def trimBeat():
+    #Remove the white noise from the start and the end.
+    return 2+2
+
+def beatSplitter(sound_data):
+    #Split the beat after every 20 seconds or more depending on where the beat sounds the same as the previous split
+
+
+
+def BeatSynth():
+    import tensorflow as tf
+
+    #INPUTs
+    X = tf.placeholder(dtype=tf.float32, shape=[None, 1])
+    Y = tf.placeholder("float")
+
+    def AutoEncoder():
+        learning_rate = 0.01
+        num_steps = 3000
+        batch_size = 5
+
+
+
+
+    def GAN():
+        def generator(x):
+            w = tf.Variable(0.0, name="w1")
+
+        def discriminator():
+
+
+
+
+
+
+#print(foook[0]
 #print(foook[100])
 #print(foook[12000])
 #print(foook[150000])
