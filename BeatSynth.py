@@ -21,7 +21,9 @@ retrieveBeat = {
 
 from pydub import AudioSegment
 from pydub.utils import get_array_type, get_encoder_name, get_frame_width, get_min_max_value, get_player_name, get_prober_name
-def getAudioData(name):
+
+
+def exploreAudioData(name):
     '''
     sound._data is a bytestring. I'm not sure what input Mpm expects, but you may need to convert the bytestring to an array like so:
     '''
@@ -57,11 +59,12 @@ def getAudioData(name):
     print(len(samples))
 
     for i in range(0, len(samples)):
-        print(samples[i])
+        #print(samples[i])
         if(i % 2 == 0):
             samples[i] = int(samples[i]/2)
         else:
             samples[i] = int(samples[i] - 0.7*samples[i])
+        samples[i] = 0      #This mutes the sound
 
     new_sound = sound._spawn(samples)
     new_sound.export("aaay", format='mp3')
