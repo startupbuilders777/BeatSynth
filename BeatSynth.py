@@ -6,22 +6,70 @@ import librosa
 import librosa.display
 import IPython.display
 import numpy as np
+import array
 
 import matplotlib.pyplot as plt
 import matplotlib.style as ms
-beat_names = ["Playboi Cari 1", "Playboi Carti 2"]
+beat_names = ["Playboi Carti 1", "Playboi Carti 2"]
 beat_paths = ["Beats/beat1.mp3", "Beats/beat2.mp3"]
 
 
 retrieveBeat = {
-    "Playboi Cari 1": "Beats/beat1.mp3",
+    "Playboi Carti 1": "Beats/beat1.mp3",
     "Playboi Carti 2": "Beats/beat2.mp3",
 }
 
 from pydub import AudioSegment
-
+from pydub.utils import get_array_type, get_encoder_name, get_frame_width, get_min_max_value, get_player_name, get_prober_name
 def getAudioData(name):
-    sound = AudioSegment.from_mp3("")
+    '''
+    sound._data is a bytestring. I'm not sure what input Mpm expects, but you may need to convert the bytestring to an array like so:
+    '''
+    sound = AudioSegment.from_mp3(retrieveBeat[name])
+
+    bytes_per_sample = sound.sample_width   #1 means 8 bit, 2 meaans 16 bit
+    print("BYTES PER SAMPLE: ")
+    print(bytes_per_sample)
+
+    bit_depth = sound.sample_width * 8
+
+    frame_rate = sound.frame_rate
+    print("FRAME RATE IS: " + str(frame_rate))
+
+    number_of_frames_in_sound = sound.frame_count()
+    number_of_frames_in_sound_200ms = sound.frame_count(ms=200)
+
+    print("NUMBER OF FRAMES IS " + str(number_of_frames_in_sound))
+    print("NUMBER OF FRAMES IN SOUND PER 200 MS: " + str(number_of_frames_in_sound_200ms))
+
+    array_type = get_array_type(bit_depth)
+    print(array_type)
+    numeric_array = array.array(array_type, sound.raw_data)
+    channel_count = sound.channels
+    print("Number of channels in the audio is: ")
+    print(channel_count)
+
+
+    #audio get array of samples
+
+
+    return numeric_array
+    #raw_data = sound.raw_data
+    #return raw_data
+
+
+foook = getAudioData("Playboi Carti 1")
+print(len(foook))
+#print(foook[0])
+
+#print(foook[100])
+#print(foook[12000])
+#print(foook[150000])
+
+
+
+
+#print(getAudioData("Playboi Carti 1"))
 
 beats = BeatSynthUtility.load_sound_files(beat_paths)
 
@@ -74,8 +122,8 @@ for beatAndTempo in beatsAndTempos:
     print("For beatAndTempo", name)
 '''
 
-displayWaveplot(y_arr, sr_arr, beat_names)
-displaySpecshow(y_arr, sr_arr, beat_names)
+#displayWaveplot(y_arr, sr_arr, beat_names)
+#displaySpecshow(y_arr, sr_arr, beat_names)
 
 
 #plt.figure()
