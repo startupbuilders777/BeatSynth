@@ -52,6 +52,37 @@ def getAudioData(name):
 
     #audio get array of samples
 
+    samples = sound.get_array_of_samples()
+    print("SAMPLES ARE")
+    print(len(samples))
+
+    for i in range(0, len(samples)):
+        print(samples[i])
+        if(i % 2 == 0):
+            samples[i] = int(samples[i]/2)
+        else:
+            samples[i] = int(samples[i] - 0.7*samples[i])
+
+    new_sound = sound._spawn(samples)
+    new_sound.export("aaay", format='mp3')
+
+    '''
+    note that when using numpy or scipy you will need to convert back to an array before you spawn:
+
+    import array
+    import numpy as np
+    from pydub import AudioSegment
+
+    sound = AudioSegment.from_file(“sound1.wav”)
+    samples = sound.get_array_of_samples()
+
+    shifted_samples = np.right_shift(samples, 1)
+
+    # now you have to convert back to an array.array
+    shifted_samples_array = array.array(sound.array_type, shifted_samples)
+
+    new_sound = sound._spawn(shifted_samples_array)
+    '''
 
     return numeric_array
     #raw_data = sound.raw_data
