@@ -58,13 +58,51 @@ def getAudioData(name):
     print("SAMPLES ARE")
     print(len(samples))
 
-    for i in range(0, len(samples)):
-        #print(samples[i])
-        if(i % 2 == 0):
-            samples[i] = int(samples[i]/2)
+    left_sound, right_sound = sound.split_to_mono()     #Split it
+    print("FRAMES IN LEFT SOUND " + str(left_sound.frame_count()))
+    print("FRAMES IN Right SOUND " + str(right_sound.frame_count()))
+
+    print("LEngth of sample left: " + str(len(left_sound.get_array_of_samples())) )
+    print("LEngth of sample right: " + str(len(left_sound.get_array_of_samples())) )
+
+    #number_of_frames_in_sound_for_every_20s = sound.frame_count(ms=20000)
+    #print("length of song is: " + str(len(samples)/number_of_frames_in_sound_for_every_20s * 20) + " seconds")
+
+    '''
+    COLLECTED DATA:
+    BYTES PER SAMPLE: 
+    2
+    FRAME RATE IS: 48000
+    NUMBER OF FRAMES IS 7688495.0
+    NUMBER OF FRAMES IN SOUND PER 200 MS: 9600.0
+    h
+    Number of channels in the audio is: 
+    2
+    SAMPLES ARE
+    15376990
+    FRAMES IN LEFT SOUND 7688495.0
+    FRAMES IN Right SOUND 7688495.0
+    LEngth of sample left: 7688495
+    LEngth of sample right: 7688495
+    15376990
+    '''
+
+    counter = 0
+    for i in range(0, len(samples)-1):
+        if(samples[i] + counter < 10000):
+            samples[i] += counter
+        if(counter < 500):
+            counter += 2
         else:
-            samples[i] = int(samples[i] - 0.7*samples[i])
-        samples[i] = 0      #This mutes the sound
+            counter = 0
+
+        #print(samples[i])
+      #  if(i % 2 == 0):
+       #     samples[i] = samples[len(samples) - i] #int(samples[i]/2)
+       # else:
+        #    samples[i] = samples[len(samples) - i] #int(samples[i] - 0.7*samples[i])
+        #samples[i] = 10000    #This mutes the sound
+        #samples[i+1] = 500
 
     new_sound = sound._spawn(samples)
     new_sound.export("aaay", format='mp3')
@@ -98,13 +136,13 @@ print(len(foook))
 
 #MAYBE WE SHUD SPLIT THE BEAT, EVERY SO OFTEN AT PLACES WHERE THE BEAT LOOPS
 
-def trimBeat():
+def trimBeat(sound_data):
     #Remove the white noise from the start and the end.
     return 2+2
 
 def beatSplitter(sound_data):
     #Split the beat after every 20 seconds or more depending on where the beat sounds the same as the previous split
-
+    2+2
 
 
 def BeatSynth():
@@ -127,6 +165,7 @@ def BeatSynth():
             w = tf.Variable(0.0, name="w1")
 
         def discriminator():
+            2+2
 
 
 
