@@ -145,10 +145,95 @@ def beatSplitter(sound_data):
     2+2
 
 
+
+
+def getLenghtOfAudioInSeconds(sound):
+    return sound.duration_seconds
+
+
+sound = AudioSegment.from_mp3(retrieveBeat["Playboi Carti 1"])
+
+data = sound.get_array_of_samples()
+frames = sound.frame_count()
+frames_per_second = len(data)/frames
+
+print("FRAMES PER SECOND ARE: " + str(frames_per_second))
+
+#IT WAS 2 FRAMES PER SECOND
+
+def getLenghtOfAudioData(data):
+    return len(data)/2000
+
+print("length of audio from data is: " + str(getLenghtOfAudioData(data)))
+print("actual length of audio from data is: " + str(getLenghtOfAudioInSeconds(sound)))
+
+
+def splitAudio(sound, numberOfSeconds, DEBUG = False):
+
+
+    #left, right = sound.split_to_mono()
+    #left = left.get_array_of_samples()
+
+    #right = right.get_array_of_samples()
+    full = sound.get_array_of_samples()
+
+    '''
+    duration_in_seconds = sound.duration_seconds
+    frames_per_second = len(left)/ duration_in_seconds
+    print("FRAMES PER SECOND IS :" + str(frames_per_second))
+    number_of_frames_per_split = int(frames_per_second * 20)
+    print("Number of frames per split " + str(number_of_frames_per_split))
+
+    
+    for i in range(0, int(len(left)/number_of_frames_per_split) - 1):
+        if(len(left[i:]) > number_of_frames_per_split):
+            itemLeft = left[i:number_of_frames_per_split]
+            itemRight = right[i: number_of_frames_per_split]
+            splittedLeft.append(itemLeft)
+            splittedRight.append(itemRight)
+            i += number_of_frames_per_split
+            print("fook")
+        else:
+            print("fook")
+    '''
+    splittedLeft = []
+
+    duration_in_seconds = sound.duration_seconds
+    frames_per_second = len(full) / duration_in_seconds
+    numberOfFramesPerSplit = frames_per_second * numberOfSeconds
+    numberOfSplits = len(full)/numberOfFramesPerSplit
+
+    lenghtOfData = len(full)
+    #sizeOfEachSplit = lenghtOfData/
+
+    a = 0
+    for i in range(0, int(numberOfSplits)):
+        splittedLeft.append(full[int(a): int(a + numberOfFramesPerSplit)])
+        a += numberOfFramesPerSplit
+
+
+    if(DEBUG == True):
+        sound = AudioSegment.from_mp3(file="Beats/beat1.mp3")
+        for i in range(0, len(splittedLeft)):
+            #
+            print(str(i) + "split")
+            new_sound = sound._spawn(splittedLeft[i])
+            new_sound.export("aaay" + str(i), format='mp3')
+
+
+
+
+    return splittedLeft, frames_per_second, numberOfFramesPerSplit, numberOfSplits
+
+
+splitAudio(sound, 20)
+
+
 def BeatSynth():
     import tensorflow as tf
 
     #INPUTs
+    soundFile = None
     X = tf.placeholder(dtype=tf.float32, shape=[None, 1])
     Y = tf.placeholder("float")
 
@@ -156,9 +241,6 @@ def BeatSynth():
         learning_rate = 0.01
         num_steps = 3000
         batch_size = 5
-
-
-
 
     def GAN():
         def generator(x):
