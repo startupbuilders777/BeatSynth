@@ -1,0 +1,101 @@
+MIDI
+A quick note about MIDI. MIDI, or Musical Instrument Digital Interface is
+a format that encodes musical notes, that we can convert into a binary
+matrix using this awesome script. Big shout out to Daniel Johnson on
+Github since much of this project couldn’t have happened without his
+help and tutorial.
+The MIDI 􀁢les contain information that a synthesizer would need to
+know such as tempo changes and note data. We would like to know when
+the note is played and released (at what time point), as well as which
+note is played (such as C#).
+If you open one of the MIDI 􀁢les in the training data with Garageband or
+Logic Pro X for example, you can see the following structure
+
+In MIDI systems, the activation of a particular note and the release of the
+same note are considered as two separate events. When a key is pressed on a
+MIDI keyboard instrument or MIDI keyboard controller, the keyboard sends
+a Note On message on the MIDI OUT port. The keyboard may be set to
+transmit on any one of the sixteen logical MIDI channels, and the status byte
+for the Note On message will indicate the selected channel number. The Note
+On status byte is followed by two data bytes, which specify key number
+(indicating which key was pressed) and velocity (how hard the key was
+pressed). The key number is used in the receiving synthesizer to select which
+note should be played, and the velocity is normally used to control the
+amplitude of the note.
+
+Difference between MIDI and MP3 Audio File Format
+
+Key Difference: MIDI stands for Musical Instrument Digital Interface. A MIDI is a file that records music and controls the notes of each instrument, what note of the scale is, etc. On the other hand, MP3 files contain files larger in size and the audio files are compressed to about one tenth of the original size.
+MIDIMIDI stands for Musical Instrument Digital Interface. A MIDI is a file that records music and controls the notes of each instrument, finishes, how loud, what note of the scale is, etc. It can be any MIDI instrument. MIDI is pronounced as middy. MIDI was first announced in 1982, and by December it actually appeared on an instrument. After that time, the electronic musical devices have increasingly became very common. It is used in instruments that have sound cards, synthesizers and sound generators that control music. It is a format that is universally accepted and if one synthesizer has produced music using MIDI format, then that can be modified with another synthesizer.
+
+MP3
+
+MP3 is short for MPEG-1 Audio Layer III. Later it also extended to MPEG-2 Audio Layer III. It is a patented encoding format for digital audio. It uses a lossy compression algorithm which is designed to reduce the amount of data required to represent the audio recording while still sounding like a faithful reproduction of the original uncompressed audio. MP3 Uncompressed audio files are rather larger and take up a lot of space. This is mainly due to the fact that sound is very complex and the translation of it into a digital format can take up a lot of data. An MP3 file compresses this data using a 128 kbit/s setting that results in a file that is about 1/11 the size of the original data. The MP3 files can be created at higher or lower bit rates, with corresponding higher or lower resulting quality.
+
+MIDI and MP3, both differ from each other. The key differences between both the terms are listed below:
+
+
+
+MIDI
+
+MP3
+
+Definition
+
+A MIDI file is software for representing musical information in a digital format.
+
+It is a patented encoding format for digital audio.
+
+Abbreviation
+
+Musical Instrument Digital Interface
+
+MPEG-1 or MPEG-2 Audio Layer III
+
+Filename extension
+
+.MIDI or .MID
+
+.mp3
+
+Format type
+
+Compressed
+
+Lossy Compressed
+
+Common use
+
+Computer based musical tools
+
+Mobile phones
+
+Storage
+
+Less storage
+
+More storage compare to MIDI
+
+File Format
+
+Narrow
+
+Wide
+
+Contain
+
+Do not contain a recording of sound
+
+Contain a recording of sound
+
+Application
+
+Compose
+
+Record
+
+Sound
+
+Versatile
+
+Less versatile
