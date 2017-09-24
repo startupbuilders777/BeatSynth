@@ -7,6 +7,7 @@ import librosa.display
 import IPython.display
 import numpy as np
 import array
+import os
 
 import matplotlib.pyplot as plt
 import matplotlib.style as ms
@@ -21,7 +22,7 @@ retrieveBeat = {
 
 from pydub import AudioSegment
 from pydub.utils import get_array_type, get_encoder_name, get_frame_width, get_min_max_value, get_player_name, get_prober_name
-
+from audio_signal_processing import stft_analysis
 
 def getAudioData(name):
     '''
@@ -144,9 +145,6 @@ def beatSplitter(sound_data):
     #Split the beat after every 20 seconds or more depending on where the beat sounds the same as the previous split
     2+2
 
-
-
-
 def getLenghtOfAudioInSeconds(sound):
     return sound.duration_seconds
 
@@ -189,14 +187,14 @@ def splitAudio(sound, numberOfSeconds, DEBUG = False):
         if(len(left[i:]) > number_of_frames_per_split):
             itemLeft = left[i:number_of_frames_per_split]
             itemRight = right[i: number_of_frames_per_split]
-            splittedLeft.append(itemLeft)
+            splitted.append(itemLeft)
             splittedRight.append(itemRight)
             i += number_of_frames_per_split
             print("fook")
         else:
             print("fook")
     '''
-    splittedLeft = []
+    splitted = []
 
     duration_in_seconds = sound.duration_seconds
     frames_per_second = len(full) / duration_in_seconds
@@ -208,49 +206,93 @@ def splitAudio(sound, numberOfSeconds, DEBUG = False):
 
     a = 0
     for i in range(0, int(numberOfSplits)):
-        splittedLeft.append(full[int(a): int(a + numberOfFramesPerSplit)])
+        splitted.append(full[int(a): int(a + numberOfFramesPerSplit)])
         a += numberOfFramesPerSplit
 
 
     if(DEBUG == True):
         sound = AudioSegment.from_mp3(file="Beats/beat1.mp3")
-        for i in range(0, len(splittedLeft)):
+        for i in range(0, len(splitted)):
             #
             print(str(i) + "split")
-            new_sound = sound._spawn(splittedLeft[i])
+            new_sound = sound._spawn(splitted[i])
             new_sound.export("aaay" + str(i), format='mp3')
 
 
 
 
-    return splittedLeft, frames_per_second, numberOfFramesPerSplit, numberOfSplits
+    return splitted, frames_per_second, numberOfFramesPerSplit, numberOfSplits
 
 
-splitAudio(sound, 20)
+def splitAudioOnDataLenght(sound, split_length = 2000, DEBUG=False):
+    # left, right = sound.split_to_mono()
+    # left = left.get_array_of_samples()
+
+    # right = right.get_array_of_samples()
+    full = sound.get_array_of_samples()
+
+    '''
+    duration_in_seconds = sound.duration_seconds
+    frames_per_second = len(left)/ duration_in_seconds
+    print("FRAMES PER SECOND IS :" + str(frames_per_second))
+    number_of_frames_per_split = int(frames_per_second * 20)
+    print("Number of frames per split " + str(number_of_frames_per_split))
 
 
-def BeatSynth():
-    import tensorflow as tf
+    for i in range(0, int(len(left)/number_of_frames_per_split) - 1):
+        if(len(left[i:]) > number_of_frames_per_split):
+            itemLeft = left[i:number_of_frames_per_split]
+            itemRight = right[i: number_of_frames_per_split]
+            splitted.append(itemLeft)
+            splittedRight.append(itemRight)
+            i += number_of_frames_per_split
+            print("fook")
+        else:
+            print("fook")
+    '''
+    splitted = []
 
-    #INPUTs
-    soundFile = None
-    X = tf.placeholder(dtype=tf.float32, shape=[None, 1])
-    Y = tf.placeholder("float")
+    duration_in_seconds = sound.duration_seconds
+    seconds_per_frame = duration_in_seconds / len(full)
+    numberOfFramesPerSplit = split_length
+    durationOfSplit = seconds_per_frame * numberOfFramesPerSplit
+    numberOfSplits = len(full) / numberOfFramesPerSplit
 
-    def AutoEncoder():
-        learning_rate = 0.01
-        num_steps = 3000
-        batch_size = 5
+    lenghtOfData = len(full)
+    # sizeOfEachSplit = lenghtOfData/
 
-    def GAN():
-        def generator(x):
-            w = tf.Variable(0.0, name="w1")
+    a = 0
+    for i in range(0, int(numberOfSplits)):
+        splitted.append(full[int(a): int(a + numberOfFramesPerSplit)])
+        a += numberOfFramesPerSplit
 
-        def discriminator():
-            2+2
+    if (DEBUG == True):
+        sound = AudioSegment.from_mp3(file="Beats/beat1.mp3")
+        for i in range(0, len(splitted)):
+            #
+            print(str(i) + "split")
+            new_sound = sound._spawn(splitted[i])
+            new_sound.export("aaay" + str(i), format='mp3')
+
+    return splitted, durationOfSplit, numberOfSplits
+
+#splitAudio(sound, 1)
+splitted, durationOfSplit, numberOfSplits = splitAudioOnDataLenght(sound)
+
+print("Duration of Split is" + str(durationOfSplit))
+print("Number of Splits is " + str(numberOfSplits))
+
+#stft_analysis()
 
 
 
+def collectData(folder):
+    for filename in os.listdir(directory):
+        if filename.endswith(".asm") or filename.endswith(".py"):
+            # print(os.path.join(directory, filename))
+            continue
+        else:
+            continue
 
 
 
