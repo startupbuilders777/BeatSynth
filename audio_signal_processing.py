@@ -6,6 +6,12 @@ class AudioSignalProcessiong():
 	def __init__(self, audio = None):
 		self.audio = audio
 
+	def fastFourierTransform(self, input, name):
+		return tf.fft(input, name=name)
+
+	def inverseFastFourierTransform(self, input, name):
+		return tf.ifft(input=input, name=name)
+
 	def log10(self, x):
 		num = tf.log(x)
 		den = tf.log(tf.constant(10, dtype=num.dtype))
@@ -64,6 +70,8 @@ class AudioSignalProcessiong():
 
 		if (int(input_length) > N):
 			raise ValueError("Input length is greater than FFT size")
+		print("Window Shape is" + str(window.get_shape()[0]))
+		print("N is " + str(N))
 
 		if (int(window.get_shape()[0]) != N):
 			raise ValueError("Window length is different from FFT size")
@@ -100,7 +108,7 @@ class AudioSignalProcessiong():
 
 		with tf.name_scope('Phase'):
 			# phase of positive frequencies
-			phase = angle(sliced_fft)
+			phase = self.angle(sliced_fft)
 
 		return magnitude, phase
 

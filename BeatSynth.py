@@ -309,6 +309,21 @@ magnitudes, phases: 3D tensor with magnitude and phase spectra of shape
 
 #Need something to collect audio data.
 
+def combineSplittedAudio(splittedSound, DEBUG = False):
+    # left, right = sound.split_to_mono()
+    # left = left.get_array_of_samples()
+
+    # right = right.get_array_of_samples()
+    full = []
+
+    full = np.append(full, splittedSound)
+
+    if DEBUG == True:
+        sound = AudioSegment.from_mp3(file="Beats/beat1.mp3")
+        new_sound = sound._spawn(data=full)
+        new_sound.export("FOX", format='mp3')
+
+    return full
 
 
 #Save and Preprocess the files
@@ -369,22 +384,72 @@ print(processedData[0].duration_seconds)
 	[batch_size, coefficients, frames]
 '''
 #########################FOURIER TRANSFORM THE DATA
+def shortTimeFourierTransform():
+    sound = processedData[0]
+    splitted, durationOfSplit, numberOfSplits = splitAudioOnDataLenght(sound, 128)
 
-sound = processedData[0]
-splitted, durationOfSplit, numberOfSplits = splitAudioOnDataLenght(sound, 20000)
+    data_placeholder = tf.placeholder(dtype=tf.float32, shape=[None, 128])
+    window = tf.Variable(dtype=tf.float32, initial_value=tf.random_normal([128])) #HAS TO BE SAME AS FFT SIZE (N)
+    data_samples = np.array(splitted).reshape([-1, 128])
 
-data_placeholder = tf.placeholder(dtype=tf.float32, shape=[None, 20000])
-window = tf.constant([128]) #HAS TO BE SAME AS FFT SIZE (N)
-data_samples = np.array(splitted).reshape([-1, 20000])
+    sess = tf.InteractiveSession()
+    sess.run(tf.global_variables_initializer())
 
-sess = tf.InteractiveSession()
-sess.run(tf.global_variables_initializer())
+    #SHORT TIME FOURIER TRANSFORM
+    m, p = SoundProcessing.stft_analysis(data_placeholder, window=window, N=128, H=5)
 
-op = SoundProcessing.stft_analysis(data_placeholder, window=window, N=128, H=5)
+    '''
+    You are forcing TensorFlow to try to run the FFT operation on CPU by calling with tf.device('/cpu:0'). 
+    However the FFT operations are currently only implemented for GPU, which is why you end up with an error message.
+    
+    If you have a GPU available you can simply remove the call to tf.device(). TensorFlow will then automatically run the FFT operation on GPU.
+    '''
+    with tf.device('/gpu:0'):
+        magnitude, phases = sess.run([m,p], feed_dict={data_placeholder: data_samples})
 
-magnitude, phases = sess.run(op, feed_dict={data_placeholder: data_samples})
-print(magnitude)
-print(phases)
+        print(magnitude)
+        print(phases)
+
+#shortTimeFourierTransform()
+
+def fastFourierTransform():
+    sound = processedData[0]
+    soundData = sound.get_array_of_samples()
+    #lengthOfTransform = len(soundData)
+
+    splitted, durationOfSplit, numberOfSplits = splitAudioOnDataLenght(sound, 20000)
+    data_placeholder = tf.placeholder(dtype=tf.complex64, shape=[None, 20000])
+
+    transformed = SoundProcessing.fastFourierTransform(data_placeholder, name="FFT")
+
+    fourier_transformed_placeholder = tf.placeholder(dtype=tf.complex64, shape=[None, 20000])
+
+    getBackOriginalData = SoundProcessing.inverseFastFourierTransform(input=fourier_transformed_placeholder, name="INVERST_FFT")
+
+    sess = tf.InteractiveSession()
+    sess.run(tf.global_variables_initializer())
+
+    with tf.device('/gpu:0'):
+        data = sess.run(transformed, feed_dict={data_placeholder: splitted})
+        originalData = sess.run(getBackOriginalData, feed_dict={fourier_transformed_placeholder: data})
+
+        print(data)
+        print(originalData)
+        save_data(splitted, "original.dat")
+        save_data(data, "fourier_transformed.dat")
+        save_data(originalData, "transformed_back.dat")
+
+
+
+'''
+if os.path.isfile("original.dat") == False \
+        or os.path.isfile("fourier_transformed.dat") == False \
+        or os.path.isfile("transformed_back.dat") == False:
+    fastFourierTransform()
+'''
+
+soundData = load_data("original.dat")
+combineSplittedAudio(soundData, True)
 
 
 
