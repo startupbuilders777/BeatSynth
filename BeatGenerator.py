@@ -1,8 +1,20 @@
 
+'''
+How does the beat synth work?
+Take a beat. Split it in to 10 second long segments. perform Fourier Transform.
+Perform like a 
+
+
+'''
+
 def BeatSynth():
     import tensorflow as tf
     import numpy as np
     import matplotlib.pyplot as plt
+
+
+
+
 
     #INPUTs
     soundFile = None

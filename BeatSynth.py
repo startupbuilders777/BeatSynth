@@ -138,9 +138,9 @@ def getAudioData(name):
     #return raw_data
 
 
-foook = getAudioData("Playboi Carti 1")
+#foook = getAudioData("Playboi Carti 1")
 
-print(len(foook))
+#print(len(foook))
 
 #MAYBE WE SHUD SPLIT THE BEAT, EVERY SO OFTEN AT PLACES WHERE THE BEAT LOOPS
 
@@ -156,21 +156,21 @@ def getLenghtOfAudioInSeconds(sound):
     return sound.duration_seconds
 
 
-sound = AudioSegment.from_mp3(retrieveBeat["Playboi Carti 1"])
+#sound = AudioSegment.from_mp3(retrieveBeat["Playboi Carti 1"])
 
-data = sound.get_array_of_samples()
-frames = sound.frame_count()
-frames_per_second = len(data)/frames
+#data = sound.get_array_of_samples()
+#frames = sound.frame_count()
+#frames_per_second = len(data)/frames
 
-print("FRAMES PER SECOND ARE: " + str(frames_per_second))
+#print("FRAMES PER SECOND ARE: " + str(frames_per_second))
 
 #IT WAS 2 FRAMES PER SECOND
 
 def getLenghtOfAudioData(data):
     return len(data)/2000
 
-print("length of audio from data is: " + str(getLenghtOfAudioData(data)))
-print("actual length of audio from data is: " + str(getLenghtOfAudioInSeconds(sound)))
+#print("length of audio from data is: " + str(getLenghtOfAudioData(data)))
+#print("actual length of audio from data is: " + str(getLenghtOfAudioInSeconds(sound)))
 
 
 def splitAudio(sound, numberOfSeconds, DEBUG = False):
@@ -284,10 +284,10 @@ def splitAudioOnDataLenght(sound, split_length = 2000, DEBUG=False):
     return splitted, durationOfSplit, numberOfSplits
 
 #splitAudio(sound, 1)
-splitted, durationOfSplit, numberOfSplits = splitAudioOnDataLenght(sound)
+#splitted, durationOfSplit, numberOfSplits = splitAudioOnDataLenght(sound)
 
-print("Duration of Split is" + str(durationOfSplit))
-print("Number of Splits is " + str(numberOfSplits))
+#print("Duration of Split is" + str(durationOfSplit))
+#print("Number of Splits is " + str(numberOfSplits))
 
 #stft_analysis()
 
@@ -348,8 +348,8 @@ def collectData(directory = "Beats/"):
 
     save_data(mp3Beats)
 
-if os.listdir(audio.dat):
-collectData()
+if os.path.isfile("audio.dat") == False:
+    collectData()
 
 
 processedData = load_data()
@@ -357,10 +357,34 @@ print(len(processedData))
 
 print(processedData[0].duration_seconds)
 
+'''
+	Analysis of a sound using the short-time Fourier transform
+	Inputs:
+	_input: tensor of shape [batch_size, audio_samples]
+	window: analysis window, tensor of shape [N]
+	N: FFT size, Integer
+	H: hop size, Integer
+	Returns:
+	magnitudes, phases: 3D tensor with magnitude and phase spectra of shape
+	[batch_size, coefficients, frames]
+'''
+#########################FOURIER TRANSFORM THE DATA
 
+sound = processedData[0]
+splitted, durationOfSplit, numberOfSplits = splitAudioOnDataLenght(sound, 20000)
 
+data_placeholder = tf.placeholder(dtype=tf.float32, shape=[None, 20000])
+window = tf.constant([128]) #HAS TO BE SAME AS FFT SIZE (N)
+data_samples = np.array(splitted).reshape([-1, 20000])
 
+sess = tf.InteractiveSession()
+sess.run(tf.global_variables_initializer())
 
+op = SoundProcessing.stft_analysis(data_placeholder, window=window, N=128, H=5)
+
+magnitude, phases = sess.run(op, feed_dict={data_placeholder: data_samples})
+print(magnitude)
+print(phases)
 
 
 

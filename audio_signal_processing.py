@@ -6,13 +6,13 @@ class AudioSignalProcessiong():
 	def __init__(self, audio = None):
 		self.audio = audio
 
-	def log10(x):
+	def log10(self, x):
 		num = tf.log(x)
 		den = tf.log(tf.constant(10, dtype=num.dtype))
 		return (tf.div(num, den))
 
 
-	def overlapping_slicer_3D(_input, block_size, stride):
+	def overlapping_slicer_3D(self,_input, block_size, stride):
 		_input_rank = int(len(_input.get_shape()))
 		blocks = []
 		n = _input.get_shape().as_list()[_input_rank - 1]
@@ -24,7 +24,7 @@ class AudioSignalProcessiong():
 		return (tf.stack(blocks, _input_rank - 1))
 
 
-	def angle(z):
+	def angle(self,z):
 		if z.dtype == tf.complex128:
 			dtype = tf.float64
 		elif z.dtype == tf.complex64:
@@ -41,11 +41,11 @@ class AudioSignalProcessiong():
 		return tf.atan(y / x) + offset
 
 
-	def is_power2(x):
+	def is_power2(self, x):
 		return x > 0 and ((x & (x - 1)) == 0)
 
 
-	def dft_analysis(_input, window, N):
+	def dft_analysis(self,_input, window, N):
 		"""
 		Analysis of a signal using the discrete Fourier transform inputs:
 		_input: tensor of shape [batch_size, N] window: analysis window, tensor of shape [N]
@@ -56,7 +56,7 @@ class AudioSignalProcessiong():
 		p of shape [batch_size, num_coefficients]
 		"""
 
-		if not(is_power2(N)):
+		if not(self.is_power2(N)):
 			raise ValueError("FFT size is not a power of 2")
 
 		_, input_length = _input.get_shape()
@@ -96,7 +96,7 @@ class AudioSignalProcessiong():
 			abs_fft = tf.abs(sliced_fft)
 
 			# magnitude spectrum of positive frequencies in dB
-			magnitude = 20 * log10(tf.maximum(abs_fft, 1E-06))
+			magnitude = 20 * self.log10(tf.maximum(abs_fft, 1E-06))
 
 		with tf.name_scope('Phase'):
 			# phase of positive frequencies
@@ -104,7 +104,7 @@ class AudioSignalProcessiong():
 
 		return magnitude, phase
 
-	def stft_analysis(_input, window, N, H) :
+	def stft_analysis(self,_input, window, N, H) :
 		"""
 		Analysis of a sound using the short-time Fourier transform
 		Inputs:
@@ -118,7 +118,7 @@ class AudioSignalProcessiong():
 		"""
 		if (H <= 0):
 			raise ValueError("Hop size (H) smaller or equal to 0")
-		if not(is_power2(N)):
+		if not(self.is_power2(N)):
 			raise ValueError("FFT size is not a power of 2")
 
 		_input_shape = tf.shape(_input)
@@ -129,12 +129,12 @@ class AudioSignalProcessiong():
 			_input = tf.concat([zeros_left, _input, zeros_right], axis=1)
 
 		with tf.name_scope('overlapping_slicer'):
-			sliced_input = overlapping_slicer_3D(_input, N, H)
+			sliced_input = self.overlapping_slicer_3D(_input, N, H)
 		_, frames, _ = sliced_input.get_shape()
 
 		with tf.name_scope('DFT_analysis'):
 			reshaped_sliced_input = tf.reshape(sliced_input, (-1, N))
-			m, p = dft_analysis(reshaped_sliced_input, window, N)
+			m, p = self.dft_analysis(reshaped_sliced_input, window, N)
 
 		with tf.name_scope('STFT_output_reshape'):
 			magnitudes = tf.reshape(m, (-1, int(m.get_shape()[-1]), int(frames)))
