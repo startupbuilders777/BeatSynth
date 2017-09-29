@@ -8,9 +8,13 @@ import IPython.display
 import numpy as np
 import array
 import os
+import tensorflow as tf
 
 import matplotlib.pyplot as plt
 import matplotlib.style as ms
+
+from audio_signal_processing import AudioSignalProcessiong
+
 beat_names = ["Playboi Carti 1", "Playboi Carti 2"]
 beat_paths = ["Beats/beat1.mp3", "Beats/beat2.mp3"]
 
@@ -22,7 +26,9 @@ retrieveBeat = {
 
 from pydub import AudioSegment
 from pydub.utils import get_array_type, get_encoder_name, get_frame_width, get_min_max_value, get_player_name, get_prober_name
-from audio_signal_processing import stft_analysis
+
+
+SoundProcessing = AudioSignalProcessiong()
 
 def getAudioData(name):
     '''
@@ -284,6 +290,21 @@ print("Number of Splits is " + str(numberOfSplits))
 
 #stft_analysis()
 
+"""
+def stft_analysis(_input, window, N, H) :
+Analysis of a sound using the short-time Fourier transform
+Inputs:
+_input: tensor of shape [batch_size, audio_samples]
+window: analysis window, tensor of shape [N]
+N: FFT size, Integer
+H: hop size, Integer
+Returns:
+magnitudes, phases: 3D tensor with magnitude and phase spectra of shape
+[batch_size, coefficients, frames]
+"""
+
+#windowTensor = tf.variable(shape=[1])
+#magnitude, phases = stft_analysis(splitted, window=windowTensor, N=40, H=5)
 
 
 def collectData(folder):
