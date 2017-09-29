@@ -10,6 +10,7 @@ import array
 import os
 import tensorflow as tf
 
+import pickle
 import matplotlib.pyplot as plt
 import matplotlib.style as ms
 
@@ -306,84 +307,84 @@ magnitudes, phases: 3D tensor with magnitude and phase spectra of shape
 #windowTensor = tf.variable(shape=[1])
 #magnitude, phases = stft_analysis(splitted, window=windowTensor, N=40, H=5)
 
+#Need something to collect audio data.
 
-def collectData(folder):
+
+
+#Save and Preprocess the files
+
+def getAudioData(directoryAndFile):
+    '''
+    sound._data is a bytestring. I'm not sure what input Mpm expects, but you may need to convert the bytestring to an array like so:
+    '''
+    sound = AudioSegment.from_mp3(directoryAndFile)
+    return sound
+
+#Do this processing
+
+def load_data(data = "audio.dat"):
+    processed_audio = None
+    with open(data, "rb") as f:
+        processed_audio = pickle.load(f)
+    return processed_audio
+
+def save_data(data, filename = "audio.dat"):
+    with open(filename, "wb") as f:
+        pickle.dump(data, f)
+
+#This will add all the beats we have to mp3Beats
+def collectData(directory = "Beats/"):
+    mp3Beats = []
     for filename in os.listdir(directory):
-        if filename.endswith(".asm") or filename.endswith(".py"):
-            # print(os.path.join(directory, filename))
+        if filename.endswith("U.mp3"):
+            print(filename)
+            beat = getAudioData(directory + filename)
+            print(beat.duration_seconds)
+            mp3Beats.append(beat)
             continue
         else:
             continue
+    print("AMOUT OF BEATS IS" + str(len(mp3Beats)))
+
+    save_data(mp3Beats)
+
+if os.listdir(audio.dat):
+collectData()
+
+
+processedData = load_data()
+print(len(processedData))
+
+print(processedData[0].duration_seconds)
 
 
 
-#print(foook[0]
-#print(foook[100])
-#print(foook[12000])
-#print(foook[150000])
 
 
 
 
-#print(getAudioData("Playboi Carti 1"))
-
-beats = BeatSynthUtility.load_sound_files(beat_paths)
-
-#print(beats[0][0].shape)
-#print(beats[1][0].shape)
-
-
-#BeatSynthUtility.plot_specgram(beat_names, beats)
-#BeatSynthUtility.plot_waves(beat_names, beats)
-#BeatSynthUtility.plot_log_power_specgram(beat_names, beats)
-
-
-def displayWaveplot(y_arr, sr_arr, names):
-    for y, sr, name in zip(y_arr, sr_arr, names):
-        plt.figure()
-        librosa.display.waveplot(y=y, sr=sr)
-        plt.title(name)
-    plt.show()
-
-def displaySpecshow(y_arr, sr_arr, names):
-    for y, sr, name in zip(y_arr, sr_arr, names):
-        chroma = librosa.feature.chroma_cqt(y=y, sr=sr)
-        plt.figure(figsize=(6, 3))
-        plt.subplot(2, 1, 1)
-        librosa.display.specshow(chroma, y_axis='chroma')
-        plt.title(name)
-    plt.show()
-
-#Returns an array of tuples, first element is tempo, second is beat, third is name.
-def getBeatsAndTempos(y_arr, sr_arr, names):
-    beatsAndTempos = []
-    for y, sr, name in zip(y_arr, sr_arr, names):
-        tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
-        beatsAndTempos.append((temp, beats, name))
-    return beatsAndTempos
-
-
-y_arr = []
-sr_arr = []
 
 
 
-for beat in beats:
-    y_arr.append(beat[0])
-    sr_arr.append(beat[1])
-'''
-beatsAndTempos = getBeatsAndTempos(y_arr, sr_arr, beat_names)
-
-for beatAndTempo in beatsAndTempos:
-    print("For beatAndTempo", name)
-'''
-
-#displayWaveplot(y_arr, sr_arr, beat_names)
-#displaySpecshow(y_arr, sr_arr, beat_names)
 
 
-#plt.figure()
-#librosa.display.waveplot(y=beats[0][0], sr=beats[0][1])
 
-#plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
