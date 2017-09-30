@@ -66,7 +66,7 @@ biases = {
 # Build Networks
 # Network Inputs
 noise_input = tf.placeholder(tf.float32, shape=[None, noise_dim])
-real_image_input = tf.placeholder(tf.float32, shape=[None, 2000, 1])
+real_audio_input = tf.placeholder(tf.float32, shape=[None, 2000])
 # A boolean to indicate batch normalization if it is training or inference time
 is_training = tf.placeholder(tf.bool)
 
@@ -75,29 +75,32 @@ is_training = tf.placeholder(tf.bool)
 def leakyrelu(x, alpha=0.2):
     return 0.5 * (1 + alpha) * x + 0.5 * (1 - alpha) * abs(x)
 
-
 def conv2d(x, W, b, stride=1):
     x = tf.nn.conv2d(input=x, filter=W, strides=[1, stride, stride, 1], padding="SAME")
     x = tf.nn.bias_add(x, b)
-    return tf.nn.relu(x)
+    return leakyrelu(x)
+
+def maxpool2d(x, k=2):
+    return tf.nn.max_pool(x, ksize=[1, k, k, 1], strides=[1, k, k, 1], padding="SAME")
 
 # Discriminator Network
 # Input: Audio, Output: Prediction Real/Fake Beat
 def discriminator(x, reuse=False):
     with tf.variable_scope('Discriminator', reuse=reuse):
-        # Typical convolutional neural network to classify images.
-        x = conv2d(x, 64, 5, strides=2, padding='same')
+        x = tf.reshape(x, shape=[-1, 1, length_of_state, 1])
+
+        # Convolution Layer
+        x = conv2d(x, weights['wc1'], biases['bc1'])
         x = tf.layers.batch_normalization(x, training=is_training)
-        x = leakyrelu(x)
-        x = tf.layers.conv2d(x, 128, 5, strides=2, padding='same')
-        x = tf.layers.batch_normalization(x, training=is_training)
-        x = leakyrelu(x)
-        # Flatten
-        x = tf.reshape(x, shape=[-1, 7 * 7 * 128])
+        x = tf.reshape(x, shape=[-1, audioExpansion, length_of_state, h_size_0/audioExpansion])
+        # Another Convolution Layer
+        x = conv2d(x, weights['wc2'], biases["bc2"])
+        # Max Pooling (down-sampling)       #Cuts both dimensiosn in half
+        x = maxpool2d(x, k=2)
+        x = tf.reshape(x, shape=[-1, int(audioExpansion/ 2 * length_of_state / 2 * h_size)])
         x = tf.layers.dense(x, 1024)
         x = tf.layers.batch_normalization(x, training=is_training)
-        x = leakyrelu(x)
-        # Output 2 classes: Real and Fake images
+        # Output 2 classes: Real and Fake Audio
         x = tf.layers.dense(x, 2)
     return x
 
