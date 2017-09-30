@@ -309,21 +309,22 @@ magnitudes, phases: 3D tensor with magnitude and phase spectra of shape
 
 #Need something to collect audio data.
 
-def combineSplittedAudio(splittedSound, DEBUG = False):
+def combineSplittedAudio(splittedSound, DEBUGFILE, DEBUG = False):
     # left, right = sound.split_to_mono()
     # left = left.get_array_of_samples()
-
+    sound = AudioSegment.from_mp3(file="Beats/beat1.mp3")
     # right = right.get_array_of_samples()
-    full = []
 
-    full = np.append(full, splittedSound)
+    sound._spawn(data=[])
+
+    for i in splittedSound:
+        new_sound = sound._spawn(data=i)
+        sound += new_sound
 
     if DEBUG == True:
-        sound = AudioSegment.from_mp3(file="Beats/beat1.mp3")
-        new_sound = sound._spawn(data=full)
-        new_sound.export("FOX", format='mp3')
+        sound.export(DEBUGFILE, format='mp3')
 
-    return full
+    #return full
 
 
 #Save and Preprocess the files
@@ -449,7 +450,14 @@ if os.path.isfile("original.dat") == False \
 '''
 
 soundData = load_data("original.dat")
-combineSplittedAudio(soundData, True)
+fourierTransformedSoundData = load_data("transformed_back.dat")
+combineSplittedAudio(splittedSound=soundData, DEBUG=True, DEBUGFILE = "Poopy")
+#combineSplittedAudio(splittedSound=fourierTransformedSoundData, DEBUG=True, DEBUGFILE="TransformedBack")
+
+
+
+
+#combineSplittedAudio(soundData, True)
 
 
 

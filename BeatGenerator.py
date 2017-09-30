@@ -13,9 +13,6 @@ def BeatSynth():
     import matplotlib.pyplot as plt
 
 
-
-
-
     #INPUTs
     soundFile = None
     X = tf.placeholder(dtype=tf.float32, shape=[None, 1])
@@ -141,8 +138,6 @@ def BeatSynth():
 
         display_step = 1000
         examples_to_show = 10
-
-
 
         # Network Parameters
         num_input = 1  # MNIST data input (img shape: 1*bug)
